@@ -30,7 +30,7 @@ Se trata de un **experimento de medición** sobre modelos ya entrenados: $\alpha
 
 Cuando el modelo $M$ ve un texto $x$, la cross-entropy que le asigna es
 
-$$H_M(x) = -\frac{1}{N}\sum_{i=1}^{N}\log P_M(x_i \mid x_{<i}),$$
+$$H_M(x) = -\frac{1}{N}\sum_{i=1}^{N}\log P_M(x_i \mid x_{\lt i}),$$
 
 en nats/token. Es la cantidad shannoniana de información: si $M$ encuentra $x$ muy sorprendente, le cuesta más describirlo ⇒ perdió información sobre la distribución que generó $x$.
 
@@ -52,7 +52,7 @@ $$I^\star = \frac{h + (1-h)f}{1 - (1-h)(1-f)\,\alpha}.$$
 
 Se usa $h = 0.05$ (inyección humana mínima) y $f = 0$ (sin curaduría, para aislar el efecto del cruce), con $T = 200$ iteraciones. El cruce con mayor $\alpha$ (y por tanto mayor $I^\star$) es el que mejor preserva la información.
 
-Por último, la matriz de degradación medida se reutiliza como **matriz de mezcla** $W = \alpha$ (normalizada por filas) en el modelo vectorial acoplado del informe, cuya condición de estabilidad es $(1-h)(1-f)\,\rho(W) < 1$, con $\rho$ el radio espectral de $W$.
+Por último, la matriz de degradación medida se reutiliza como **matriz de mezcla** $W = \alpha$ (normalizada por filas) en el modelo vectorial acoplado del informe, cuya condición de estabilidad es $(1-h)(1-f)\,\rho(W) \lt 1$, con $\rho$ el radio espectral de $W$.
 
 ---
 
@@ -91,8 +91,6 @@ Se seleccionan 8 contextos (de más de 40 palabras), con 2 generaciones por prom
 
 ## 6. Resultados
 
-> **Nota sobre las imágenes:** las figuras las genera el notebook en `salidas_cruces_llm/`. Copia los 5 `.png` a la carpeta `images/` (con los mismos nombres) para que se muestren aquí.
-
 ### Matriz de degradación $\alpha_{i\to j}$
 
 Filas = generador $i$, columnas = evaluador $j$ (1.000 = sin pérdida):
@@ -114,33 +112,23 @@ Lectura de las cuatro preguntas:
 
 ### Figuras
 
-
-<img width="1462" height="607" alt="image" src="https://github.com/user-attachments/assets/c2044bfd-f4ac-4142-be5a-aa69f7dff5e0" />
-
+<img width="1462" height="607" alt="Mapas de calor de α y de la calidad estacionaria I*" src="https://github.com/user-attachments/assets/c2044bfd-f4ac-4142-be5a-aa69f7dff5e0" />
 
 *Matriz de degradación $\alpha_{i\to j}$ (1 = sin pérdida) y calidad estacionaria $I^\star_{i\to j}$. Filas: generadores (4 modelos + humano); columnas: evaluadores.*
 
-
-
-<img width="1048" height="554" alt="image" src="https://github.com/user-attachments/assets/92051e76-703b-4311-8b33-ff397b672629" />
-
+<img width="1048" height="554" alt="Trayectorias de todos los cruces" src="https://github.com/user-attachments/assets/92051e76-703b-4311-8b33-ff397b672629" />
 
 *Evolución $I_t$ de cada cruce $i\to j$; los cruces `humano→` van en línea gruesa. Las curvas que se estabilizan más arriba preservan mejor la información.*
 
-
-<img width="1587" height="785" alt="image" src="https://github.com/user-attachments/assets/d22d612e-6bc3-4649-b40b-a04486a5e68f" />
-
+<img width="1587" height="785" alt="Trayectorias agrupadas por generador" src="https://github.com/user-attachments/assets/d22d612e-6bc3-4649-b40b-a04486a5e68f" />
 
 *Una subgráfica por generador: cómo le va a su texto según qué modelo lo procese.*
 
-
-<img width="1318" height="457" alt="image" src="https://github.com/user-attachments/assets/6f72eb51-2ff1-4d8e-838a-cc6066d33146" />
-
+<img width="1318" height="457" alt="Ranking de preservación" src="https://github.com/user-attachments/assets/6f72eb51-2ff1-4d8e-838a-cc6066d33146" />
 
 *$\alpha$ entrante medio (mejor evaluador / preserva mejor lo ajeno) y $\alpha$ saliente medio (su texto sobrevive mejor).*
 
-<img width="1203" height="584" alt="image" src="https://github.com/user-attachments/assets/bd9a6fc2-1018-429b-bc7a-6279a56491af" />
-
+<img width="1203" height="584" alt="Modelo vectorial acoplado" src="https://github.com/user-attachments/assets/bd9a6fc2-1018-429b-bc7a-6279a56491af" />
 
 *Modelo vectorial acoplado con la matriz empírica $W = \alpha$ (normalizada por filas): trayectoria $I_t^{(k)}$ de cada modelo.*
 
@@ -152,7 +140,7 @@ Lectura de las cuatro preguntas:
 - Ser buen evaluador **no** implica ser buen generador: `qwen0.5b` es el peor generador ($\alpha$ saliente $0.682$), mientras que `distilgpt2` —mucho más pequeño— produce el texto que mejor sobrevive a otros modelos. La preservación es una propiedad **asimétrica**.
 - La asimetría $\alpha_{A\to B} \neq \alpha_{B\to A}$ se confirma en toda la matriz: leer y ser leído no son intercambiables.
 - Algunos cruces dan $\alpha > 1$ (p. ej. `distilgpt2 → smollm2` $= 1.145$): el evaluador encuentra el texto ajeno **menos** sorprendente que el propio generador su propio texto. Es decir, la auto-entropía no siempre es el mínimo global, lo que rompe el supuesto $\alpha \in (0,1]$ de la recurrencia y produce valores de $I^\star$ fuera de rango en esos cruces —un límite a tener en cuenta al mapear la medida empírica al modelo teórico.
-- El modelo vectorial acoplado con la matriz empírica $W$ resulta estable ($(1-h)(1-f)\,\rho(W) < 1$), de modo que la calidad no colapsa a cero bajo la mezcla de cruces medida.
+- El modelo vectorial acoplado con la matriz empírica $W$ resulta estable ($(1-h)(1-f)\,\rho(W) \lt 1$), de modo que la calidad no colapsa a cero bajo la mezcla de cruces medida.
 
 ---
 

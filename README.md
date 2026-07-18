@@ -114,28 +114,33 @@ Lectura de las cuatro preguntas:
 
 ### Figuras
 
-![Mapas de calor de α y de la calidad estacionaria I*](<img width="1462" height="607" alt="image" src="https://github.com/user-attachments/assets/972cfa35-9819-49ed-8b74-756aeffbcc3e" />
-)
+
+<img width="1462" height="607" alt="image" src="https://github.com/user-attachments/assets/c2044bfd-f4ac-4142-be5a-aa69f7dff5e0" />
+
 
 *Matriz de degradación $\alpha_{i\to j}$ (1 = sin pérdida) y calidad estacionaria $I^\star_{i\to j}$. Filas: generadores (4 modelos + humano); columnas: evaluadores.*
 
-![Trayectorias de todos los cruces](<img width="1048" height="554" alt="image" src="https://github.com/user-attachments/assets/f142367c-6d5b-4cdf-b09a-59dc06d15526" />
-)
+
+
+<img width="1048" height="554" alt="image" src="https://github.com/user-attachments/assets/92051e76-703b-4311-8b33-ff397b672629" />
+
 
 *Evolución $I_t$ de cada cruce $i\to j$; los cruces `humano→` van en línea gruesa. Las curvas que se estabilizan más arriba preservan mejor la información.*
 
-![Trayectorias agrupadas por generador](<img width="1587" height="785" alt="image" src="https://github.com/user-attachments/assets/428d5e53-41d6-4ed8-be2a-08bc7f8f3ccb" />
-)
+
+<img width="1587" height="785" alt="image" src="https://github.com/user-attachments/assets/d22d612e-6bc3-4649-b40b-a04486a5e68f" />
+
 
 *Una subgráfica por generador: cómo le va a su texto según qué modelo lo procese.*
 
-![Ranking de preservación](<img width="1318" height="457" alt="image" src="https://github.com/user-attachments/assets/ec65b1fe-8c0a-4964-90ec-5ee82a90262e" />
-)
+
+<img width="1318" height="457" alt="image" src="https://github.com/user-attachments/assets/6f72eb51-2ff1-4d8e-838a-cc6066d33146" />
+
 
 *$\alpha$ entrante medio (mejor evaluador / preserva mejor lo ajeno) y $\alpha$ saliente medio (su texto sobrevive mejor).*
 
-![Modelo vectorial acoplado](<img width="1203" height="584" alt="image" src="https://github.com/user-attachments/assets/5f2d5296-8026-4efc-9b16-9dcc417dd9a4" />
-)
+<img width="1203" height="584" alt="image" src="https://github.com/user-attachments/assets/bd9a6fc2-1018-429b-bc7a-6279a56491af" />
+
 
 *Modelo vectorial acoplado con la matriz empírica $W = \alpha$ (normalizada por filas): trayectoria $I_t^{(k)}$ de cada modelo.*
 
